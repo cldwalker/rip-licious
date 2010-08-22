@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+## Usage: rip-git PACKAGE [GIT_ARGUMENTS]
+##
+## Runs git commands from within a package's directory
+
+require 'rip/script'
+
+if dir = rip(:'find-package', ARGV.shift)
+  Dir.chdir dir
+  exec 'git', *ARGV
+end
