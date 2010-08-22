@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# Usage: rip-find-package PACKAGE
+#
+# Finds a package path by package name
+
+require 'rip/script'
+
+abort "Need a package" unless name = ARGV[0]
+
+package_path = rip("installed").detect do |path|
+  if package = metadata(path)
+    package.name == name
+  end
+end
+
+puts package_path if package_path
