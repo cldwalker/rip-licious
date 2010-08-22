@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+# Usage: rip-package-handle-gist URL
+
+$-e = true
+
+require 'rip/script'
+
+source, path, version = Rip::Package.parse_args(ARGV)
+
+# Only handle root packages
+exit 3 if path != '/'
+
+unless source =~ %r{http://gist\.github\.com/(\d+)}
+  exit 3 # Can't handle source
+end
+
+gist_id = $1
+git_path = rip(:package, "git://gist.github.com/#{gist_id}.git", version)
+git_url, git_ref = rip(:'package-metadata', git_path).split(' ')
+
+name = "gist-#{File.basename(git_path)}"
+path = "#{Rip.packages}/#{name}"
+
+synchronize(path) do
+  rm_rf path
+
+  unless File.directory?(path)
+    mkdir_p path
+
+    bin_dir = "#{path}/bin/"
+    lib_dir = "#{path}/lib/"
+
+    Dir["#{git_path}/*"].each do |file|
+      next if File.basename(file) == "metadata.rip"
+
+      if File.executable?(file)
+        mkdir_p bin_dir
+        cp file, bin_dir
+      elsif File.extname(file) == ".rb"
+        mkdir_p lib_dir
+        cp file, lib_dir
+      end
+    end
+
+    write("#{path}/metadata.rip") { "#{source} #{git_ref}" }
+  end
+
+  puts path
+end
