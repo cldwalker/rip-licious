@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# Usage: rip-usage COMMAND
+#
+# Prints usage for a rip command
+
+abort "Need a command" unless command = ARGV[0]
+
+if path_dir = ENV['PATH'].split(':').find {|dir| File.exists?("#{dir}/rip-#{command}") }
+  usage = []
+  file_lines = File.readlines("#{path_dir}/rip-#{command}")
+  file_lines.shift
+  while (line = file_lines.shift)[/^#/]
+    usage << line
+  end
+  puts usage.map {|e| e.sub(/^#+\s*/, '') }
+else
+  abort "'#{command}' is not a rip command. See rip's commands with 'rip commands'."
+end
+
+
