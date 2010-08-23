@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-## Usage: rip-test PACKAGE [RAKE_OPTIONS]
-##
-## Runs a package's tests with `rake test`
+# Usage: rip-test PACKAGE [RAKE_OPTIONS]
+#
+# Runs a package's tests with `rake test`
 
 require 'rip/script'
 

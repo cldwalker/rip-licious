@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-## Usage: rip-git [*GIT_ARGUMENTS] PACKAGE
-##
-## Runs git commands from within a package's directory
+# Usage: rip-git [*GIT_ARGUMENTS] PACKAGE
+#
+# Runs git commands from within a package's directory
 
 require 'rip/script'
 
