@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# Usage: rip-gemspec PACKAGE
+#
+# Prints a package's gemspec
+
+require 'rip/script'
+
+abort "Need a package" unless package = ARGV[0]
+
+if (dir = rip('find-package', package)) && (spec = Dir["#{dir}/*.gemspec"][0])
+  puts File.read(spec)
+else
+  puts "No gemspec found"
+end
