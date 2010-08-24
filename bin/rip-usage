@@ -5,14 +5,24 @@
 
 abort "Need a command" unless command = ARGV[0]
 
-if path_dir = ENV['PATH'].split(':').find {|dir| File.exists?("#{dir}/rip-#{command}") }
+def find_command_directory(command)
+  ENV['PATH'].split(':').find {|dir| File.exists?("#{dir}/rip-#{command}") }
+end
+
+def print_usage(dir, command)
   usage = []
-  file_lines = File.readlines("#{path_dir}/rip-#{command}")
+  file_lines = File.readlines("#{dir}/rip-#{command}")
   file_lines.shift
   while (line = file_lines.shift)[/^#/]
     usage << line
   end
   puts usage.map {|e| e.sub(/^#+\s*/, '') }
+end
+
+if dir = find_command_directory(command)
+  print_usage(dir, command)
+elsif dir = find_command_directory("sh-#{command}")
+  print_usage(dir, "sh-#{command}")
 else
   abort "'#{command}' is not a rip command. See rip's commands with 'rip commands'."
 end
