@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# Usage: rip-env-mv RIPENV NEW_RIPENV
+#
+# Moves ripenv to a new name
+
+require 'rip/script'
+
+ripenv, newenv = ARGV[0], ARGV[1]
+
+abort "Can't find ripenv `#{ripenv}'" unless Rip.envs.include?(ripenv)
+abort "Can't move the current ripenv" if ripenv == Rip.env
+abort "Need a new ripenv" if newenv.nil?
+
+ENV['RIPENV'] = ripenv
+if rip(:env, '-b', newenv)
+  ENV['RIPENV'] = Rip.env
+  rip(:env, '-d', ripenv)
+end
