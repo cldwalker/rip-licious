@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+# Usage: rip-dump [-d] [-D] [-r]
+#
+# Dumps ripenvs to a directory as ripfiles. Also diffs a dump and restores
+#   from one with the following options.
+# If -d (diff), displays a diff against the last dump.
+# If -r (restore), restores a dump by installing all packages in dump.
+# If -D (directory), specifies a directory to save/restore the dump.
+#   Default is ~/.rip_envs.
+
+require 'rip/script'
+
+diff = ARGV.delete('-d') || ARGV.delete('--diff')
+restore = ARGV.delete('-r') || ARGV.delete('--restore')
+directory = ARGV.delete('-D') || ARGV.delete('--directory') || "~/.rip_envs"
+directory = File.expand_path directory
+
+def dump_to_directory(dir)
+  mkdir_p dir
+  rm_f Dir.glob(dir+"/*")
+
+  Rip.envs.inject({}) {|h,env|
+    ENV['RIPENV'] = env
+    list = rip('list -p')
+    File.open("#{dir}/#{env}.rip", 'w') {|f| f.write(list) }
+    h[env] = list.split("\n")
+    h
+  }
+end
+
+if diff
+  require 'tmpdir'
+  previous_dir = directory
+  directory = Dir.tmpdir + '/rip_dump_diff'
+  dump_to_directory directory
+  abort "Previous dump doesn't exist" unless File.directory? previous_dir
+  exec 'diff', '-br', previous_dir, directory
+elsif restore
+  Dir["#{directory}/*"].each {|file|
+    env = basename(file).sub('.rip', '')
+    abort "Can't restore invalid ripfile #{file}" if env.empty?
+    rip(:create, env)
+    rm_rf "#{Rip.dir}/#{env}"
+    ENV['RIPENV'] = env
+    rip("install -o #{file}")
+  }
+else
+  envs = dump_to_directory directory
+  puts "Dumped #{envs.keys.size} ripenvs containing "+
+    "#{envs.values.flatten.uniq.size} unique packages"
+end
