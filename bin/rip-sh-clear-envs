@@ -4,7 +4,7 @@
 # Clears envs by popping all pushed envs
 
 require 'rip/script'
-pushed_envs = rip(:'active-envs').split("\n") - [Rip.env]
+pushed_envs = rip(:'pushed-envs').split("\n") - [Rip.env]
 
 puts <<-CLEAR_ENVS
 local env;
