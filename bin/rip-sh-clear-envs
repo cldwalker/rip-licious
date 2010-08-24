@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# Usage: rip-clear-envs
+#
+# Clears envs by popping all pushed envs
+
+require 'rip/script'
+pushed_envs = rip(:'active-envs').split("\n") - [Rip.env]
+
+puts <<-CLEAR_ENVS
+local env;
+for env in #{pushed_envs.join(' ')};
+do
+  rip-pop $env;
+done;
+CLEAR_ENVS

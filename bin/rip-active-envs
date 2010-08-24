@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# Usage: rip-active-envs
+#
+# Prints all ripenvs active in $RUBYLIB
+
+require 'rip'
+
+puts ENV['RUBYLIB'].to_s.split(":").map {|e|
+  e[/^#{Rip.dir}\/([^\/]+)\/lib/, 1]
+}.compact - ['active']
