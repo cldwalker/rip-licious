@@ -16,7 +16,7 @@ def print_usage(dir, command)
   while (line = file_lines.shift)[/^#/]
     usage << line
   end
-  puts usage.map {|e| e.sub(/^#+\s*/, '') }
+  puts usage.map {|e| e.sub(/^#+\s?/, '') }
 end
 
 if dir = find_command_directory(command)
