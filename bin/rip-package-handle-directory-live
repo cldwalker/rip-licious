@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# Usage: rip-package-handle-directory-live DIRECTORY
+#
+# Treats a directory path as a package. This package is unique in that
+# no upgrade is needed for edits to the source to automatically effect
+# the package. However, new files do require an upgrade.
+# This is handy for development but requires a patched rip,
+# http://github.com/cldwalker/rip/tree/dirlive .
+
+$-e = true
+
+require 'rip/script'
+
+source = ARGV[0]
+
+if source && File.directory?(possible = File.expand_path(source)) ||
+  File.directory?(possible = "#{File.dirname(Dir.pwd)}/#{source}")
+  source = possible
+else
+  exit 3
+end
+
+rm Dir["#{source}/{lib,bin,man}/**/*~"]
+name = File.basename(source)
+hash = Rip.md5(source)
+package_path = "#{Rip.packages}/#{name}-#{hash}"
+rm_rf package_path
+mkdir_p package_path
+
+ln_s  Dir["#{source}/{[A-Za-z]*,.gemspec}"].reject {|e| e[/~$/] }, package_path
+write("#{package_path}/metadata.rip") { source }
+puts package_path
