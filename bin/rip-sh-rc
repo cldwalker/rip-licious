@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+puts <<-RC
+if [[ -f "$PWD/.riprc" ]]; then
+  source "$PWD/.riprc";
+fi;
+RC
