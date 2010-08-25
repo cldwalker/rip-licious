@@ -13,4 +13,5 @@ package_path = rip("installed").detect do |path|
   end
 end
 
-puts package_path if package_path
+exit 1 unless package_path
+puts package_path
