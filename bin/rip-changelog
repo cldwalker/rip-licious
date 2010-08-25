@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# Usage: rip-changelog PACKAGE
+#
+# Prints a package's changelog or history
+
+require 'rip/script'
+
+abort "Need a package" unless package = ARGV[0]
+
+if (dir = rip('find-package', package)) &&
+  (log = Dir["#{dir}/*"].sort.grep(/changelog|history/i)[0])
+  puts File.read(log)
+else
+  puts "No changelog found"
+end
