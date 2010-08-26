@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+# Usage: rip-rake PACKAGE RAKE_ARGUMENTS
+#
+# Runs a package's rake task
+
+require 'rip/script'
+
+if dir = rip(:'find-package', ARGV.shift)
+  Dir.chdir dir
+  exec 'rake', *ARGV
+end
