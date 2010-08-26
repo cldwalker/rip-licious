@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+# Usage: rip-sh-rc
+#
+# Sources .riprc in current directory
 
 puts <<-RC
 if [[ -f "$PWD/.riprc" ]]; then
