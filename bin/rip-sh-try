@@ -1,0 +1,7 @@
+#!/bin/sh
+# Usage: rip-sh-try GEM
+#
+# Try a package by installing it in its own env
+
+rip env -c $1
+RIPENV=$1 rip install $1
